@@ -12,16 +12,23 @@ app.get('/', function(req,res){
 
 app.get('/search',function(req,res){
 	var movieSearch = req.query.q3;
+	if (!movieSearch) {
+		res.render("search", {movies: []});
+	} else {
+		var url = "http://www.omdbapi.com?s="+movieSearch;
 
-	var url = "http://www.omdbapi.com?s="+movieSearch;
-
-	request(url, function(err, resp, body){
-		if (!err && resp.statusCode === 200) {
-			var jsonData = JSON.parse(body);
-			console.log("\n\n\n\nTHIS IS JSON DATA", jsonData);
-			res.render("search", {movies: jsonData.Search});
-		}
-	});
+		request(url, function(err, resp, body){
+			console.log("I'm in here 2");
+			if (!err && resp.statusCode === 200) {
+				console.log("I'm in here 3");
+				var jsonData = JSON.parse(body);
+				if (!jsonData.Search) {
+					res.render("search", {movies: [], noMovies: true});
+				}
+				res.render("search", {movies: jsonData.Search, noMovies: false});
+			}
+		});
+	}
 });
 
 app.get('/movie', function(req,res){
