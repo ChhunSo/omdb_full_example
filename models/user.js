@@ -58,6 +58,10 @@ module.exports = function (sequelize, DataTypes){
           }
 
         });
+      },
+      associate: function(models) {
+        this.hasMany(models.FavoriteMovie);
+        // associations can be defined here
       }
 
     } // close classMethods
