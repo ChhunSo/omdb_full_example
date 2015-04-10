@@ -146,7 +146,7 @@ app.post('/favorites', function(req,res){
 	req.currentUser().then(function(dbUser){
 		if (dbUser) {
 			dbUser.addToFavs(db,imdbID,rating).then(function(movie){
-				res.send("The movie was added " + movie.imdbID);
+				res.redirect('/profile');
 			});
 		} else {
 			res.redirect('/login');
