@@ -135,6 +135,21 @@ app.get('/movie', function(req,res){
 	});
 });
 
+app.post('/favorites', function(req,res){
+	var imdbID = req.body.imdbID;
+	var rating = req.body.rating;
+
+	req.currentUser().then(function(dbUser){
+		if (dbUser) {
+			dbUser.addToFavs(db,imdbID,rating).then(function(movie){
+				res.send("The movie was added " + movie.imdbID);
+			});
+		} else {
+			res.redirect('/login');
+		}
+	});
+});
+
 
 app.listen(3000, function(){
 	console.log("I'm listening");

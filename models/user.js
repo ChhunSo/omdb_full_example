@@ -23,6 +23,10 @@ module.exports = function (sequelize, DataTypes){
     instanceMethods: {
       checkPassword: function(password) {
         return bcrypt.compareSync(password, this.passwordDigest);
+      },
+      addToFavs: function(db,imdbID,rating) {
+        return db.FavoriteMovie
+          .create({imdbID: imdbID, rating: rating, UserId: this.id});
       }
     },
     classMethods: {

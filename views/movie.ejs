@@ -12,6 +12,16 @@
 			<div class="col-xs-6">Title: <%= movie.Title %> </div>
 			<div class="col-xs-6">Plot: <%= movie.Plot %> </div>
 		</div>
+		<div class="row">
+			<div class="col-xs-12">
+				<form method="POST" action="/favorites">
+					<input type="text" style="display: none;"
+					       value="<%= movie.imdbID%>" name="imdbID">
+					<input type="number" name="rating">
+					<button>Favorite</button>
+				</form>
+			</div>
+		</div>
 	</div>
 </body>
 </html>
