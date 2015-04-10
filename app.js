@@ -62,7 +62,11 @@ app.get('/signup', function(req,res){
 app.get('/profile', function(req,res){
 	req.currentUser().then(function(dbUser){
 		if (dbUser) {
-			res.render('user/profile', {ejsUser: dbUser});
+			db.FavoriteMovie.findAll({where: {UserId: dbUser.id}})
+			  .then(function(movies){
+			  	console.log("\n\n\n\n\nHELLO", movies);
+				res.render('user/profile', {ejsUser: dbUser, idk: movies});
+			});
 		} else {
 			res.redirect('/login');
 		}

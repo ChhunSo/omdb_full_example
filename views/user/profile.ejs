@@ -13,9 +13,14 @@
 		<form method="POST" action="/logout?_method=DELETE">
 			<button>Logout</button>
 		</form>
-		<form method="POST" action="/logout?_method=DELETE">
-			<button>Mystery Logout</button>
-		</form>
+
+		<ul>
+			<% idk.forEach(function(fav){ %>
+				<li>
+					imdbID: <%= fav.imdbID %>
+				</li>
+			<% }) %>
+		</ul>
 	</div>
 </body>
 </html>
