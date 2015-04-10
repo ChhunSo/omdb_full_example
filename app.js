@@ -52,7 +52,7 @@ app.delete('/logout', function(req,res){
 app.get('/search',function(req,res){
 	var movieSearch = req.query.q3;
 	if (!movieSearch) {
-		res.render("search", {movies: []});
+		res.render("search", {movies: [], noMovies: true});
 	} else {
 		var url = "http://www.omdbapi.com?s="+movieSearch;
 
