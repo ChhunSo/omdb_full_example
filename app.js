@@ -4,6 +4,7 @@ var request = require('request');
 var db = require('./models');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+var methodOverride = require('method-override');
 
 app.set("view engine", "ejs");	
 // This defines req.session
@@ -26,8 +27,14 @@ app.use("/", function(req,res,next) {
 		         	return dbUser;
 		         });
 	};
-	req.
+	req.logout = function() {
+		req.session.userId = null;
+		req.user = null;
+	};
+	next();
 });
+
+app.use(methodOverride("_method"));
 
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -39,7 +46,13 @@ app.get('/', function(req,res){
 
 
 app.get('/login', function(req,res){
-	res.render("user/login");
+	req.currentUser().then(function(user){
+		if (user) {
+			res.redirect('/profile');
+		} else {
+			res.render("user/login");
+		}
+	});
 });
 
 app.get('/signup', function(req,res){
@@ -47,7 +60,13 @@ app.get('/signup', function(req,res){
 });
 
 app.get('/profile', function(req,res){
-	res.send("I'm a profile");
+	req.currentUser().then(function(dbUser){
+		if (dbUser) {
+			res.render('user/profile', {ejsUser: dbUser});
+		} else {
+			res.redirect('/login');
+		}
+	});
 });
 
 app.post('/login', function(req,res){
@@ -56,6 +75,7 @@ app.post('/login', function(req,res){
 	db.User.authenticate(email,password)
 	  .then(function(dbUser){
 	  	if(dbUser) {
+	  		req.login(dbUser);
 	  		res.redirect('/profile');
 	  	} else {
 	  		res.redirect('/login');
@@ -77,7 +97,8 @@ app.post('/signup', function(req,res){
 });
 
 app.delete('/logout', function(req,res){
-	res.send("I'm a delete");
+	req.logout();
+	res.redirect('/login');
 });
 
 
