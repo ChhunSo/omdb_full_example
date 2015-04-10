@@ -3,8 +3,31 @@ var app = express();
 var request = require('request');
 var db = require('./models');
 var bodyParser = require('body-parser');
+var session = require('express-session');
 
-app.set("view engine", "ejs");
+app.set("view engine", "ejs");	
+// This defines req.session
+app.use(session({
+	secret: "I'm very very secret thing",
+	resave: false,
+	save: {
+		uninitialize: true
+	}
+}));
+
+app.use("/", function(req,res,next) {
+	req.login = function(user) {
+		req.session.userId = user.id;
+	};
+	req.currentUser = function() {
+		return db.User.find(req.session.userId)
+		         .then(function(dbUser) {
+		         	req.user = dbUser;
+		         	return dbUser;
+		         });
+	};
+	req.
+});
 
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -28,7 +51,16 @@ app.get('/profile', function(req,res){
 });
 
 app.post('/login', function(req,res){
-	res.send("I'm a login");
+	var email = req.body.email;
+	var password = req.body.password;
+	db.User.authenticate(email,password)
+	  .then(function(dbUser){
+	  	if(dbUser) {
+	  		res.redirect('/profile');
+	  	} else {
+	  		res.redirect('/login');
+	  	}
+	  }); 
 });
 
 // GET /user/:id ---> req.params.id

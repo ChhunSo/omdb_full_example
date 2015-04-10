@@ -53,6 +53,8 @@ module.exports = function (sequelize, DataTypes){
           }
           else if (user.checkPassword(password)){
             return user;
+          } else {
+            return false;
           }
 
         });
